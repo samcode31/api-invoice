@@ -74,45 +74,57 @@ class InvoiceController extends Controller
         
         $logo = public_path('/imgs/logo.png');
         $this->pdf->AliasNbPages();
-        $this->pdf->SetMargins(10, 10);              
+        $this->pdf->SetMargins(12, 10);              
         $this->pdf->AddPage('P', 'Letter');
 
-        $this->pdf->Image($logo, 10, 10, 25);
-        $this->pdf->SetFont('Arial', 'B', '16');
-        $this->pdf->SetY(25);  
-        $this->pdf->Cell(80, 6, "", 0, 0, 'L' );
-        $this->pdf->Cell(0, 10, "Amazon Web Services, Inc. Invoice", 0, 0, 'L' );
+        $border=0;
+        $this->pdf->Image($logo, 10, 10, 24);
+        
+        $this->pdf->SetY(28); 
+        $this->pdf->SetFont('Arial', '', '9'); 
+        $this->pdf->Cell(80, 4, "Account number:", $border, 0, 'L' );
+        $x = $this->pdf->GetX();
+        $this->pdf->SetFont('Arial', '', '15');
+        $this->pdf->SetXY($x,25); 
+        $this->pdf->Cell(0, 6, "Amazon Web Services, Inc. Invoice", $border, 0, 'L' );
+        $this->pdf->Ln();
+
+       
+        $this->pdf->SetFont('Arial', '', '16');
+        $this->pdf->Cell(0, 8, "477737808775", $border, 0, 'L' );
         $this->pdf->Ln();
 
         $border=0;
         $y=$this->pdf->GetY();
-        $this->pdf->SetFont('Arial', 'B', '10');
-        $this->pdf->Cell(80, 4, "Account number:", $border, 0, 'L' );
+         
+        $this->pdf->SetFont('Arial', '', '9');
+        $this->pdf->SetY($y-3);
+        $this->pdf->Cell(80, 4, "", $border, 0, 'L' );
         $this->pdf->SetLineWidth(1);
-        $this->pdf->SetFont('Arial', 'B', '14');
+        $this->pdf->SetFont('Arial', 'B', '12');
         $this->pdf->SetDrawColor(204,205,153);
         $this->pdf->Cell(0, 8, "Invoice Summary", "T", 0, 'L' );
         $this->pdf->SetLineWidth(0.2);
         $this->pdf->Ln();
 
-        $this->pdf->SetY($y+4);
+        $this->pdf->SetY($y);
         $this->pdf->SetFont('Arial', '', '16');
-        $this->pdf->Cell(80, 6, "477737808775", $border, 0, 'L' );
-        $this->pdf->SetFont('Arial', '', '11');
+        $this->pdf->Cell(80, 4, "", $border, 0, 'L' );
+        $this->pdf->SetFont('Arial', '', '9');
         $x=$this->pdf->GetX();
-        $this->pdf->SetXY($x,$y+8);
-        $this->pdf->Cell(35, 6, "Invoice Number:", "T", 0, 'L' );
-        $this->pdf->Cell(0, 6, $invoiceId, "T", 0, 'R' );
+        $this->pdf->SetXY($x,$y+4);
+        $this->pdf->Cell(35, 4, "Invoice Number:", "T", 0, 'L' );
+        $this->pdf->Cell(0, 4, $invoiceId, "T", 0, 'R' );
         $this->pdf->Ln();
 
-        $this->pdf->Cell(80, 6, "", $border, 0, 'L' );
-        $this->pdf->SetFont('Arial', '', '11');
-        $this->pdf->Cell(35, 6, "Invoice Date:", "B", 0, 'L' );
-        $this->pdf->Cell(0, 6, "February 18, 2023", "B", 0, 'R' );
+        $this->pdf->Cell(80, 4, "", $border, 0, 'L' );
+        $this->pdf->SetFont('Arial', '', '9');
+        $this->pdf->Cell(35, 4, "Invoice Date:", "B", 0, 'L' );
+        $this->pdf->Cell(0, 4, $billingPeriodStart, "B", 0, 'R' );
         $this->pdf->Ln();
 
         $this->pdf->Cell(80, 8, "", $border, 0, 'L' );
-        $this->pdf->SetFont('Arial', 'B', '11');
+        $this->pdf->SetFont('Arial', 'B', '10');
         $this->pdf->SetLineWidth(1);
         $this->pdf->Cell(35, 8, "TOTAL AMOUNT DUE ON $billingPeriodStart", "B", 0, 'L' );
         $this->pdf->Cell(0, 8, "TT$ $invoiceTotal", "B", 0, 'R' );
@@ -120,7 +132,7 @@ class InvoiceController extends Controller
 
         $y=$this->pdf->GetY();
         $border=0;
-        $this->pdf->SetY($y-10);
+        $this->pdf->SetY($y-15);
         $this->pdf->SetFont('Arial', '', '9');
         $this->pdf->SetLineWidth(0.2);
         $this->pdf->Cell(80, 4, "Bill to Address:", $border, 0, 'L' );
@@ -132,7 +144,7 @@ class InvoiceController extends Controller
         $this->pdf->Cell(80, 4, "ATT: Principal", $border, 0, 'L' );
         $this->pdf->Ln();
 
-        $this->pdf->Cell(80, 4, $customerAddress, $border, 0, 'L' );
+        $this->pdf->MultiCell(40, 4, $customerAddress, $border, 'L' );
         $this->pdf->Ln(12);
 
         $this->pdf->SetFont('Arial', '', '12');
@@ -249,7 +261,7 @@ class InvoiceController extends Controller
 
 
 
-        $this->pdf->Output('I', 'Invoice.pdf');
+        $this->pdf->Output('I', "$customerName invoice$invoiceId.pdf");
         exit;
     }
 }
